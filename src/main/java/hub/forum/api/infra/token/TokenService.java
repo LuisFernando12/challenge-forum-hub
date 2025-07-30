@@ -5,6 +5,8 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import hub.forum.api.infra.token.dto.TokenDTO;
 import hub.forum.api.infra.token.interfaces.TokenInterface;
 import org.springframework.stereotype.Component;
@@ -21,15 +23,19 @@ public class TokenService implements TokenInterface {
     @Override
     public String generateToken(TokenDTO payload) {
         try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            String payloadJson = objectMapper.writeValueAsString(payload);
             Algorithm algorithm = Algorithm.HMAC256(this.SECRETE);
             return JWT.create()
                     .withIssuer(this.ISSUER)
                     .withSubject(payload.subject())
-                    .withPayload(payload.toString())
+                    .withPayload(payloadJson)
                     .withExpiresAt(expiresAt())
                     .sign(algorithm);
         } catch (JWTCreationException exception) {
             throw new RuntimeException(exception);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
         }
     }
 
