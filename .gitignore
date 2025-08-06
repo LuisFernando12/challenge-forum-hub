@@ -5,7 +5,7 @@ target/
 !**/src/test/**/target/
 ./data
 ./data/**
-
+compose.yaml
 ### STS ###
 .apt_generated
 .classpath
