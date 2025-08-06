@@ -1,0 +1,17 @@
+#networks:
+#  net-project: //network specific to project
+#    driver: bridge
+#services:
+#  mysql:
+#    image: bitnami/mysql:latest //image mysql
+#    container_name: container name
+#    environment:
+#      - MYSQL_DATABASE=database name
+#      - MYSQL_ROOT_USERNAME=username to database
+#      - MYSQL_ROOT_PASSWORD=password
+#    ports:
+#      - '3306:3306' //Map Port to access db
+#    volumes:
+#      - ./data:/bitnami/mysql //Backup local to restore when up your container again
+#    networks:
+#      - net-project
