@@ -1,53 +1,53 @@
 package hub.forum.api.controller;
 
-import hub.forum.api.domain.profile.model.Profile;
-import hub.forum.api.domain.profile.repository.ProfileRepository;
+import hub.forum.api.domain.user.dto.UpdateUserDTO;
 import hub.forum.api.domain.user.dto.UserCreateDTO;
 import hub.forum.api.domain.user.dto.UserResponseDTO;
-import hub.forum.api.domain.user.model.User;
-import hub.forum.api.domain.user.repository.UserRepository;
+import hub.forum.api.domain.user.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/users")
 public class UserController {
     @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private ProfileRepository profileRepository;
+    private UserService userService;
     @PostMapping
     @Transactional
     public ResponseEntity<UserResponseDTO> createUser(@RequestBody @Valid UserCreateDTO userCreateDTO, UriComponentsBuilder uriComponentsBuilder){
-        User user = new User(userCreateDTO);
-        Profile profile = this.profileRepository.getReferenceById(userCreateDTO.profile_id());
-        user.setProfile(profile);
-        var userDB = this.userRepository.save(user);
-        var uri = uriComponentsBuilder.path("users/{id}").buildAndExpand(userDB.getId()).toUri();
-        return ResponseEntity.created(uri).body(new UserResponseDTO(userDB));
+       var user = this.userService.createUser(userCreateDTO);
+       var uri = uriComponentsBuilder.path("users/{id}").buildAndExpand(user.id()).toUri();
+       return ResponseEntity.created(uri).body(user);
     }
     @GetMapping
     @Transactional
-    public ResponseEntity findAllUser(){
-        var users = this.userRepository.findAll().stream().map(UserResponseDTO::new).toList();
-        return ResponseEntity.ok(users);
+    public ResponseEntity<List<UserResponseDTO>> findAllUser(){
+       var users = this.userService.findAllUsers();
+       return ResponseEntity.ok(users);
     }
     @GetMapping("/{id}")
     @Transactional
-    public ResponseEntity findAllUser(@PathVariable("id") Long id){
-        var user = this.userRepository.getReferenceById(id);
-        return ResponseEntity.ok(user);
+    public ResponseEntity<UserResponseDTO> getUser(@PathVariable("id") Long id){
+       var user = this.userService.getUser(id);
+       return ResponseEntity.ok(user);
     }
-    //TODO: Implementar o update do usuario validando o que pode ser atualizado
+    @PutMapping("/{id}")
+    @Transactional
+    public ResponseEntity<UserResponseDTO> updateUser(@RequestBody UpdateUserDTO updateUserDTO, @PathVariable("id") Long id){
+       var user = this.userService.updateUser(updateUserDTO, id);
+       return ResponseEntity.ok(user);
+    }
     @DeleteMapping("/{id}")
     @Transactional
-    public ResponseEntity deleteUser(@PathVariable("id") Long id){
-        var user = this.userRepository.getReferenceById(id);
-        user.softDelete();
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<HttpStatusCode> deleteUser(@PathVariable("id") Long id){
+       this.userService.deleteUser(id);
+       return ResponseEntity.noContent().build();
     }
 }

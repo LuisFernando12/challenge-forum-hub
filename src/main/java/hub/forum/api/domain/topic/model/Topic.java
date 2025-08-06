@@ -6,11 +6,14 @@ import hub.forum.api.domain.topic.dto.UpdateTopicDTO;
 import hub.forum.api.domain.topic.enums.Status;
 import hub.forum.api.domain.user.model.User;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity(name = "Topic")
@@ -34,6 +37,16 @@ public class Topic {
     private Course course;
     @OneToMany(mappedBy = "topic", cascade = CascadeType.ALL)
     private List<Response> response;
+    @Column(name = "createdAt", insertable = false, updatable = false)
+    private LocalDateTime createdAt;
+
+    public Topic(String title, String message, Status status, User userDB, Course courseDB) {
+        this.title = title;
+        this.message = message;
+        this.status = status;
+        this.author = userDB;
+        this.course = courseDB;
+    }
 
     public void update(UpdateTopicDTO updateTopicDTO) {
         if(updateTopicDTO.message()!=null){

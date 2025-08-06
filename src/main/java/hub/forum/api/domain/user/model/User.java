@@ -3,6 +3,7 @@ package hub.forum.api.domain.user.model;
 import hub.forum.api.domain.profile.model.Profile;
 import hub.forum.api.domain.response.model.Response;
 import hub.forum.api.domain.topic.model.Topic;
+import hub.forum.api.domain.user.dto.UpdateUserDTO;
 import hub.forum.api.domain.user.dto.UserCreateDTO;
 import jakarta.persistence.*;
 import jakarta.validation.Valid;
@@ -88,5 +89,14 @@ public class User implements UserDetails {
 
     public void softDelete() {
         this.active = false;
+    }
+
+    public void update(UpdateUserDTO updateUserDTO) {
+        if(updateUserDTO.email() != null){
+            this.email = updateUserDTO.email();
+        }
+        if (updateUserDTO.name() != null){
+            this.name = updateUserDTO.name();
+        }
     }
 }

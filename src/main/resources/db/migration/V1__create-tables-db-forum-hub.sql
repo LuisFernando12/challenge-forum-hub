@@ -23,7 +23,6 @@ CREATE TABLE users(
     CONSTRAINT fk_user_profile_id FOREIGN KEY (profile_id) REFERENCES profiles(id)
 );
 
-
 CREATE TABLE topics (
     id BIGINT NOT NULL AUTO_INCREMENT,
     title VARCHAR(100) NOT NULL,

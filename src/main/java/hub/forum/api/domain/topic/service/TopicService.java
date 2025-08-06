@@ -42,13 +42,11 @@ public class TopicService {
             throw new RuntimeException("Already exists a topic whit this title or message ");
         }
         Topic topic = new Topic(
-                null,
                 createTopicDTO.title(),
                 createTopicDTO.message(),
                 Status.ACTIVE,
                 userDB,
-                courseDB,
-                null
+                courseDB
         );
         var topicDB = this.topicRepository.save(topic);
         return new ResponseTopicDTO(topicDB);
