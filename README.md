@@ -56,7 +56,7 @@ O **Forum Hub** é uma API REST que simula o backend de um fórum de discussões
 
 ### Pré-requisitos
 
-- Java 17 ou superior
+- Java 21 ou superior
 - Maven 3.6+
 - MySQL 8.0+
 - Docker (opcional)
